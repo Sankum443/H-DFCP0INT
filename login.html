@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Login Form</title>
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #111;
+      color: #33cc33;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      flex-direction: column;
+      /* Added to stack elements vertically */
+    }
+
+    /* Terminal Styling */
+    .terminal {
+      width: 400px;
+      padding: 30px;
+      background-color: #000;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+      text-align: left;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: flex-end;
+    }
+
+    .dot {
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      background-color: #333;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .red {
+      background-color: #ff5c5c;
+      animation-delay: 0s;
+    }
+
+    .yellow {
+      background-color: #ffcc00;
+      animation-delay: 0.3s;
+    }
+
+    .green {
+      background-color: #33cc33;
+      animation-delay: 0.6s;
+    }
+
+    /* Pulsing Animation */
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+
+      50% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+
+    }
+
+    /* Command Box Styling */
+    .cmd-box {
+      margin-bottom: 15px;
+    }
+
+    .cmd-text {
+      display: inline-block;
+      color: #33cc33;
+      margin-right: 10px;
+    }
+
+    .input {
+      background: none;
+      border: none;
+      border-bottom: 1px solid #33cc33;
+      color: #33cc33;
+      width: 100%;
+      padding: 5px 10px;
+      font-size: 16px;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: #ffcc00;
+    }
+
+    .input::placeholder {
+      color: #33cc33;
+      opacity: 0.7;
+    }
+
+    /* Blinking Cursor Effect */
+    .input:focus::after {
+      content: '|';
+      color: #33cc33;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+
+    /* Button Styling */
+    .login-btn {
+      background-color: #33cc33;
+      color: #111;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #28b328;
+    }
+
+    /* Hacking Effect */
+    .hacking-text {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #ff5c5c;
+      font-size: 14px;
+      font-family: 'Courier New', Courier, monospace;
+      z-index: -1;
+      animation: typing 5s steps(40) 1s forwards;
+    }
+
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
+
+    /* Simulate Command Typing */
+    .command-line {
+      display: none;
+      font-size: 16px;
+      margin-top: 20px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .command-line span {
+      color: #33cc33;
+    }
+
+    .access-denied {
+      color: #ff5c5c;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    /* Centered Service Provider Text */
+    .service-provider {
+      font-size: 36px;
+      color: #33cc33;
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      overflow: hidden;
+      animation: typing 4s;
+
+    }
+
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="service-provider">
+    Tofan Service Provider
+  </div>
+  <br>
+  <div class="terminal">
+    <div class="header">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+    <div class="cmd-box">
+      <span class="cmd-text">login:</span>
+      <input type="text" class="input" id="username" placeholder="Username" autocomplete="off" />
+    </div>
+    <div class="cmd-box">
+      <span class="cmd-text">password:</span>
+      <input type="password" class="input" id="password" placeholder="Password" autocomplete="off" />
+    </div>
+    <div class="cmd-box">
+      <button class="login-btn" onclick="simulateLogin()">Login</button>
+    </div>
+
+    <!-- Hacking Text -->
+    <div class="hacking-text">> Hacking... Please wait...</div>
+
+    <!-- Command Line Simulation -->
+    <div class="command-line" id="command-line">
+      <span>> Checking username and password...</span>
+      <br>
+      <span>> Access granted!</span>
+    </div>
+
+    <!-- Access Denied Message -->
+    <div class="access-denied" id="access-denied" style="display: none;">> Access Denied!</div>
+  </div>
+
+  <script>
+    function simulateLogin() {
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+
+      // Example username and password
+      var correctUsername = 'Tofan';
+      var correctPassword = 'password123';
+
+      document.querySelector('.hacking-text').style.display = 'block';  // Display "Hacking..." text
+      setTimeout(() => {
+        document.querySelector('.hacking-text').style.display = 'none';  // Hide "Hacking..." text
+
+        if (username === correctUsername && password === correctPassword) {
+          document.getElementById('command-line').style.display = 'block';  // Show simulated command line for access granted
+          document.getElementById('access-denied').style.display = 'none';  // Hide access denied message
+
+          setTimeout(() => {
+            localStorage.setItem('userId', 'AsTofan');
+            window.location.href = "viewd.html"; // Replace 'nextpage.html' with your target page
+          }, 2000);
+
+
+        } else {
+          document.getElementById('command-line').style.display = 'none';  // Hide command line
+          document.getElementById('access-denied').style.display = 'block';  // Show access denied message
+        }
+      }, 3000);  // Delay for 3 seconds for the hacking effect
+    }
+  </script>
+</body>
+
+</html>

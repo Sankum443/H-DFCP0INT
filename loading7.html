@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loading...</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      background: #fff;
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+
+    .loader-container {
+        margin-top: 10%;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #ccc;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+
+    .timer {
+      margin-top: 5px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="loader-container">
+  <div class="spinner"></div>
+  <div class="message">Please wait...</div>
+  <div class="timer" id="timer">00:00</div>
+</div>
+
+<script>
+  let seconds = 10;
+  const timerElement = document.getElementById('timer');
+
+  const countdown = setInterval(() => {
+    let min = String(Math.floor(seconds / 60)).padStart(2, '0');
+    let sec = String(seconds % 60).padStart(2, '0');
+    timerElement.textContent = `${min}:${sec}`;
+
+    if (seconds === 0) {
+      clearInterval(countdown);
+
+      window.location.href = "o4.html";
+
+    }
+
+    seconds--;
+  }, 1000);
+</script>
+

